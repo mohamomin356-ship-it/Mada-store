@@ -1,1 +1,557 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدى | MADA — متجر الخدمات الرقمية والشحن والتوثيق</title>
 
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Font: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                        display: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: '#030612',
+                        deepSpace: '#070d1f',
+                        sapphire: '#2563eb',
+                        electricCyan: '#38bdf8',
+                        royalViolet: '#7c3aed',
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body class="selection:bg-sky-500 selection:text-obsidian">
+
+    <!-- Strictly Clipped Cosmic Background & Diagonal Neon Rays -->
+    <div class="cosmic-env">
+        <div class="neon-ray-1"></div>
+        <div class="neon-ray-2"></div>
+    </div>
+
+    <!-- Ultra-Light 75-Star Canvas (Auto-Pauses when document.hidden) -->
+    <canvas id="starfield-canvas"></canvas>
+
+    <!-- =========================================================
+         MAIN CUSTOMER STOREFRONT SHELL
+    ========================================================= -->
+    <div class="relative z-10 min-h-screen flex flex-col pb-24 md:pb-8">
+
+        <!-- 1. SMART TOP HEADER (LOGO + LIVE SEARCH + CURRENCY + CART + ACCOUNT) -->
+        <header class="sticky top-0 z-30 w-full px-3 py-2.5">
+            <div class="max-w-7xl mx-auto glass-panel rounded-2xl px-3 sm:px-5 py-2.5 border-sky-400/25 space-y-2.5 md:space-y-0">
+                <div class="flex items-center justify-between gap-2 sm:gap-4">
+
+                    <!-- RIGHT: Glowing MADA Prism Logo & Brand -->
+                    <button onclick="window.scrollTo({top:0, behavior:'smooth'});" class="flex items-center gap-2.5 shrink-0 group">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-electricCyan via-sapphire to-royalViolet p-[1.5px] shadow-[0_0_16px_rgba(56,189,248,0.45)]">
+                            <div class="w-full h-full bg-obsidian rounded-[10.5px] flex items-center justify-center">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 group-hover:rotate-45 transition-transform duration-300" viewBox="0 0 28 28" fill="none">
+                                    <defs>
+                                        <linearGradient id="brandGrad" x1="2" y1="2" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0%" stop-color="#38bdf8"/>
+                                            <stop offset="50%" stop-color="#2563eb"/>
+                                            <stop offset="100%" stop-color="#7c3aed"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M14 2L17.6 10.4L26 14L17.6 17.6L14 26L10.4 17.6L2 14L10.4 10.4L14 2Z" stroke="url(#brandGrad)" stroke-width="1.8" fill="rgba(56,189,248,0.2)"/>
+                                    <circle cx="14" cy="14" r="2.6" fill="#ffffff"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-right leading-tight">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-black text-base sm:text-xl text-white">مدى</span>
+                                <span class="text-[11px] sm:text-xs font-extrabold tracking-widest text-cosmic-gradient">MADA</span>
+                            </div>
+                            <span class="hidden sm:block text-[10px] text-slate-400">للخدمات الرقمية الفورية</span>
+                        </div>
+                    </button>
+
+                    <!-- CENTER (Desktop): Instant Live Search Bar -->
+                    <div class="hidden md:block flex-1 max-w-md relative">
+                        <input
+                            type="text"
+                            id="desktop-search-input"
+                            oninput="handleLiveSearch(this.value, 'desktop')"
+                            onfocus="handleLiveSearch(this.value, 'desktop')"
+                            placeholder="ابحث فوراً: ببجي، فري فاير، سناب، انستا، تيك توك، ذكاء..."
+                            class="w-full bg-obsidian/85 border border-sky-400/25 focus:border-electricCyan rounded-xl pr-10 pl-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none transition"
+                            autocomplete="off"
+                        >
+                        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-electricCyan text-xs"></i>
+                        <div id="desktop-search-dropdown" class="hidden absolute top-full right-0 left-0 mt-2 glass-panel rounded-2xl p-2 border-sky-400/45 shadow-2xl z-50 max-h-72 overflow-y-auto"></div>
+                    </div>
+
+                    <!-- LEFT: Currency + Cart + Dynamic Account Area -->
+                    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                        <select id="header-currency-select" onchange="changeCurrency(this.value)" aria-label="العملة" class="bg-obsidian/90 border border-sky-400/30 rounded-xl px-2 py-2 text-[11px] sm:text-xs font-bold text-sky-200 focus:outline-none cursor-pointer">
+                            <option value="DZD">د.ج</option>
+                            <option value="SAR">ر.س</option>
+                            <option value="USD">$</option>
+                        </select>
+
+                        <button onclick="toggleCartDrawer(true)" aria-label="سلة المشتريات" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-obsidian/85 border border-sky-400/30 hover:border-electricCyan text-sky-200 flex items-center justify-center transition">
+                            <i class="fa-solid fa-bag-shopping text-sm"></i>
+                            <span id="header-cart-badge" class="absolute -top-1.5 -left-1.5 min-w-[19px] h-[19px] px-1 rounded-full bg-gradient-to-r from-electricCyan to-sapphire text-obsidian text-[10px] font-black flex items-center justify-center shadow">0</span>
+                        </button>
+
+                        <div id="header-account-area" class="flex items-center gap-1.5"></div>
+                    </div>
+                </div>
+
+                <!-- Mobile Live Search Bar -->
+                <div class="md:hidden relative">
+                    <input
+                        type="text"
+                        id="mobile-search-input"
+                        oninput="handleLiveSearch(this.value, 'mobile')"
+                        onfocus="handleLiveSearch(this.value, 'mobile')"
+                        placeholder="ابحث: ببجي، فري فاير، سناب، انستا، ذكاء..."
+                        class="w-full bg-obsidian/85 border border-sky-400/25 focus:border-electricCyan rounded-xl pr-9 pl-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none"
+                        autocomplete="off"
+                    >
+                    <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-electricCyan text-xs"></i>
+                    <div id="mobile-search-dropdown" class="hidden absolute top-full right-0 left-0 mt-1.5 glass-panel rounded-2xl p-2 border-sky-400/45 shadow-2xl z-50 max-h-64 overflow-y-auto"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- =========================================================
+             MAIN STOREFRONT VIEW
+        ========================================================= -->
+        <main id="view-store" class="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 space-y-6 sm:space-y-7 pt-2">
+
+            <!-- 2. COSMIC HERO + QUICK CATEGORY ICONS -->
+            <section class="space-y-4">
+                <div class="glass-panel rounded-3xl p-5 sm:p-7 border-sky-400/25 relative overflow-hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                        <div class="md:col-span-7 space-y-3.5 text-right order-2 md:order-1">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sapphire/20 border border-electricCyan/35 text-[11px] sm:text-xs font-bold text-sky-200">
+                                <span class="w-2 h-2 rounded-full bg-electricCyan animate-pulse"></span>
+                                <span>تسليم آلي فوري خلال 1-5 دقائق ⚡</span>
+                            </div>
+
+                            <h1 class="font-black text-2xl sm:text-4xl lg:text-[2.75rem] leading-[1.2] text-white">
+                                اشحن، وثّق، وانطلق <span class="text-cosmic-gradient">في ثوانٍ</span>
+                            </h1>
+
+                            <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-lg">
+                                منصتك الفضائية الفاخرة لشحن الألعاب والتطبيقات، توثيق الحسابات الرسمية، واشتراكات الذكاء الاصطناعي بسرعة فائقة وضمان مدى الذهبي.
+                            </p>
+
+                            <div class="flex flex-wrap items-center gap-2.5 pt-1">
+                                <button onclick="scrollToServices()" class="btn-sapphire px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span>ابدأ الشحن الآن</span>
+                                </button>
+                                <button onclick="handleHeroVipButton()" id="hero-secondary-cta" class="glass-panel hover:border-electricCyan px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-sky-200 flex items-center gap-2 transition">
+                                    <i class="fa-solid fa-crown text-amber-300"></i>
+                                    <span>انضم لعملاء VIP (-10%)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Pure CSS 3D + SVG Floating Cosmic Glass Prism -->
+                        <div class="md:col-span-5 flex items-center justify-center order-1 md:order-2">
+                            <div class="prism-stage" id="cosmic-prism-stage">
+                                <div class="prism-rig" id="cosmic-prism-rig">
+                                    <div class="prism-ambient-glow"></div>
+
+                                    <div class="orbit-ring orbit-ring-1">
+                                        <span class="orbit-spark"></span>
+                                    </div>
+                                    <div class="orbit-ring orbit-ring-2">
+                                        <span class="orbit-spark orbit-spark-violet"></span>
+                                    </div>
+                                    <div class="orbit-ring orbit-ring-3"></div>
+
+                                    <div class="prism-core">
+                                        <svg class="w-24 h-24 sm:w-28 sm:h-28 drop-shadow-[0_0_24px_rgba(56,189,248,0.65)]" viewBox="0 0 120 120" fill="none">
+                                            <defs>
+                                                <linearGradient id="prismFaceTop" x1="20" y1="8" x2="102" y2="108" gradientUnits="userSpaceOnUse">
+                                                    <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.96"/>
+                                                    <stop offset="45%" stop-color="#38bdf8" stop-opacity="0.72"/>
+                                                    <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.88"/>
+                                                </linearGradient>
+                                                <linearGradient id="prismFaceLeft" x1="18" y1="30" x2="60" y2="112" gradientUnits="userSpaceOnUse">
+                                                    <stop offset="0%" stop-color="#2563eb" stop-opacity="0.90"/>
+                                                    <stop offset="100%" stop-color="#030612" stop-opacity="0.95"/>
+                                                </linearGradient>
+                                                <linearGradient id="prismFaceRight" x1="60" y1="10" x2="104" y2="96" gradientUnits="userSpaceOnUse">
+                                                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.76"/>
+                                                    <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.90"/>
+                                                </linearGradient>
+                                            </defs>
+                                            <polygon points="60,8 102,42 84,106 36,106 18,42" fill="url(#prismFaceTop)" stroke="#7dd3fc" stroke-width="1.5"/>
+                                            <polygon points="60,8 18,42 36,106 60,64" fill="url(#prismFaceLeft)" stroke="rgba(255,255,255,0.28)" stroke-width="0.9"/>
+                                            <polygon points="60,8 102,42 84,106 60,64" fill="url(#prismFaceRight)" stroke="rgba(255,255,255,0.36)" stroke-width="0.9"/>
+                                            <polygon points="36,106 84,106 60,64" fill="rgba(56,189,248,0.25)" stroke="rgba(192,132,252,0.55)" stroke-width="0.9"/>
+                                            <path d="M60 40L64.4 55.6L80 60L64.4 64.4L60 80L55.6 64.4L40 60L55.6 55.6L60 40Z" fill="#ffffff" fill-opacity="0.95"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Category Icons -->
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="category-pills-bar">
+                    <button onclick="selectCategory('all')" data-cat="all" class="cat-pill shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition">
+                        <span>الكل</span>
+                    </button>
+                    <button onclick="selectCategory('games')" data-cat="games" class="cat-pill shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition">
+                        <span>🎮</span>
+                        <span>شحن الألعاب</span>
+                    </button>
+                    <button onclick="selectCategory('verify')" data-cat="verify" class="cat-pill shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition">
+                        <span class="text-electricCyan">✓</span>
+                        <span>توثيق الحسابات</span>
+                    </button>
+                    <button onclick="selectCategory('apps')" data-cat="apps" class="cat-pill shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition">
+                        <span>📱</span>
+                        <span>شحن التطبيقات</span>
+                    </button>
+                    <button onclick="selectCategory('ai')" data-cat="ai" class="cat-pill shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition">
+                        <span>✨</span>
+                        <span>اشتراكات AI</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 3. VIP QUICK REORDER SECTION -->
+            <section id="vip-quick-reorder-section" class="hidden space-y-3">
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <h2 class="font-extrabold text-sm sm:text-base text-white">إعادة الشحن السريع ⚡</h2>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400/20 text-amber-300 border border-amber-400/40">خصم VIP -10% مفعّل</span>
+                    </div>
+                    <button onclick="openCustomerHub('saved')" class="text-[11px] sm:text-xs text-electricCyan hover:text-white font-bold transition">
+                        المعرّفات المحفوظة <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    </button>
+                </div>
+                <div id="vip-quick-reorder-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            </section>
+
+            <!-- 4. PROMO BANNERS STRIP -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div onclick="openServiceModal('snapchat')" class="glass-card rounded-2xl p-4 border-amber-400/30 cursor-pointer flex items-center justify-between gap-3">
+                    <div class="space-y-1">
+                        <span class="inline-block px-2 py-0.5 rounded-md bg-yellow-400/20 text-yellow-300 text-[10px] font-extrabold">الأكثر طلباً ★</span>
+                        <h3 class="font-extrabold text-sm text-white">توثيق سناب بلس فوري</h3>
+                        <p class="text-[11px] text-slate-300">النجمة السوداء الرسمية خلال 5 دقائق</p>
+                    </div>
+                    <div class="w-11 h-11 rounded-2xl bg-yellow-400/15 border border-yellow-400/40 flex items-center justify-center text-yellow-300 text-xl shrink-0">
+                        <i class="fa-brands fa-snapchat"></i>
+                    </div>
+                </div>
+
+                <div onclick="openServiceModal('pubg')" class="glass-card rounded-2xl p-4 border-electricCyan/35 cursor-pointer flex items-center justify-between gap-3">
+                    <div class="space-y-1">
+                        <span class="inline-block px-2 py-0.5 rounded-md bg-sky-400/20 text-sky-300 text-[10px] font-extrabold">شحن آلي بالـ ID ⚡</span>
+                        <h3 class="font-extrabold text-sm text-white">باقات شدات ببجي UC</h3>
+                        <p class="text-[11px] text-slate-300">تصل لحسابك في أقل من دقيقتين</p>
+                    </div>
+                    <div class="w-11 h-11 rounded-2xl bg-sky-400/15 border border-sky-400/40 flex items-center justify-center text-sky-300 text-xl shrink-0">
+                        <i class="fa-solid fa-crosshairs"></i>
+                    </div>
+                </div>
+
+                <div onclick="openServiceModal('ai-suite')" class="glass-card rounded-2xl p-4 border-royalViolet/40 cursor-pointer flex items-center justify-between gap-3">
+                    <div class="space-y-1">
+                        <span class="inline-block px-2 py-0.5 rounded-md bg-violet-500/25 text-violet-200 text-[10px] font-extrabold">تفعيل رسمي ✨</span>
+                        <h3 class="font-extrabold text-sm text-white">اشتراكات الذكاء الاصطناعي</h3>
+                        <p class="text-[11px] text-slate-300">ChatGPT Plus • Claude • Midjourney</p>
+                    </div>
+                    <div class="w-11 h-11 rounded-2xl bg-violet-500/20 border border-violet-400/40 flex items-center justify-center text-violet-300 text-xl shrink-0">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. SMART GROUPED SERVICES GRID -->
+            <section id="services-section" class="space-y-4 pt-1">
+                <div class="flex items-end justify-between gap-2">
+                    <div>
+                        <h2 class="font-black text-xl sm:text-2xl text-white">المنصات والخدمات الرقمية</h2>
+                        <p class="text-xs text-slate-400">اختر منصتك لتحديد الباقة المناسبة وإتمام الطلب في ثوانٍ</p>
+                    </div>
+                    <span id="services-count-pill" class="px-3 py-1 rounded-xl glass-panel text-[11px] font-bold text-electricCyan">8 منصات</span>
+                </div>
+
+                <div id="services-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"></div>
+            </section>
+
+            <!-- 6. TRUST STRIP & SUBTLE COSMIC FOOTER -->
+            <section class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <div class="glass-panel rounded-2xl p-4 flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-electricCyan/15 border border-electricCyan/35 flex items-center justify-center text-electricCyan text-lg shrink-0">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">تسليم فوري آلي</h4>
+                        <p class="text-[11px] text-slate-400">معالجة فورية للشحن والتوثيق خلال 1-5 دقائق</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-4 flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-sapphire/20 border border-sapphire/40 flex items-center justify-center text-sky-300 text-lg shrink-0">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">+12,400 طلب مكتمل</h4>
+                        <p class="text-[11px] text-slate-400">ثقة آلاف اللاعبين وصناع المحتوى</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-4 flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-royalViolet/20 border border-royalViolet/45 flex items-center justify-center text-violet-300 text-lg shrink-0">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">ضمان مدى الذهبي</h4>
+                        <p class="text-[11px] text-slate-400">دفع آمن وضمان كامل للتفعيل والاسترجاع</p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="glass-panel rounded-3xl pt-6 pb-4 px-5 text-center relative overflow-hidden">
+                <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 pb-4 border-b border-white/10">
+                    <div class="flex items-center gap-2">
+                        <span class="font-black text-base text-white">مدى | MADA</span>
+                        <span>•</span>
+                        <span>متجر الشحن والتوثيق والذكاء الاصطناعي</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="openCustomerHub('orders')" class="text-sky-300 hover:text-white font-bold transition">تتبع طلباتي</button>
+                        <a href="https://wa.me/213550000000" target="_blank" rel="noopener" class="text-emerald-300 hover:text-emerald-200 font-bold transition">
+                            <i class="fa-brands fa-whatsapp ml-1"></i>دعم واتساب
+                        </a>
+                    </div>
+                </div>
+                <div class="mada-watermark pt-3 select-none">MADA</div>
+                <p class="text-[11px] text-slate-500 mt-1">© 2026 جميع الحقوق محفوظة لمتجر مدى للخدمات الرقمية</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- 7. MOBILE BOTTOM NAVIGATION BAR -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 px-2.5 pb-2.5 pt-1 pointer-events-none">
+        <div class="glass-panel rounded-2xl px-1.5 py-1.5 grid grid-cols-5 gap-1 border-sky-400/35 shadow-[0_-8px_30px_rgba(2,6,23,0.92)] pointer-events-auto">
+            <button onclick="mobileNavAction('home')" id="mnav-home" class="mnav-btn flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-electricCyan bg-sapphire/25 shadow-[0_0_12px_rgba(37,99,235,0.35)] transition">
+                <i class="fa-solid fa-house text-sm"></i>
+                <span class="text-[10px] font-bold">الرئيسية</span>
+            </button>
+            <button onclick="mobileNavAction('categories')" id="mnav-categories" class="mnav-btn flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-slate-300 transition">
+                <i class="fa-solid fa-shapes text-sm"></i>
+                <span class="text-[10px] font-semibold">الأقسام</span>
+            </button>
+            <button onclick="mobileNavAction('orders')" id="mnav-orders" class="mnav-btn flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-slate-300 transition">
+                <i class="fa-solid fa-receipt text-sm"></i>
+                <span class="text-[10px] font-semibold">طلباتي</span>
+            </button>
+            <button onclick="toggleCartDrawer(true)" id="mnav-cart" class="mnav-btn relative flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-slate-300 transition">
+                <i class="fa-solid fa-bag-shopping text-sm"></i>
+                <span id="mobile-cart-badge" class="absolute top-0.5 left-1/2 -translate-x-4 min-w-[17px] h-[17px] px-1 rounded-full bg-gradient-to-r from-electricCyan to-sapphire text-obsidian text-[9px] font-black flex items-center justify-center">0</span>
+                <span class="text-[10px] font-semibold">السلة</span>
+            </button>
+            <button onclick="mobileNavAction('account')" id="mnav-account" class="mnav-btn flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-slate-300 transition">
+                <i id="mnav-account-icon" class="fa-solid fa-user text-sm"></i>
+                <span id="mnav-account-label" class="text-[10px] font-semibold">حسابي</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 8. SERVICE CONFIGURATOR MODAL -->
+    <div id="service-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm" onclick="closeModal('service-modal')">
+        <div class="glass-panel rounded-3xl max-w-lg w-full max-h-[92dvh] flex flex-col border-sky-400/40 overflow-hidden" onclick="event.stopPropagation()">
+            <div class="shrink-0 px-5 py-4 border-b border-blue-500/20 bg-obsidian/85 flex items-center justify-between gap-3">
+                <div id="service-modal-header" class="flex items-center gap-3 min-w-0"></div>
+                <button onclick="closeModal('service-modal')" class="w-9 h-9 rounded-xl glass-panel text-slate-300 hover:text-white flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="service-modal-body" class="flex-1 overflow-y-auto overscroll-contain p-5 space-y-5"></div>
+        </div>
+    </div>
+
+    <!-- 9. CART DRAWER & CHECKOUT -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm" onclick="toggleCartDrawer(false)">
+        <div class="fixed inset-y-0 left-0 w-full sm:max-w-md h-full max-h-[100dvh] glass-panel border-r border-sky-400/40 flex flex-col overflow-hidden" onclick="event.stopPropagation()">
+            <div class="shrink-0 p-4 border-b border-blue-500/20 bg-obsidian/90 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-sapphire/25 border border-electricCyan/35 flex items-center justify-center text-electricCyan">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-white">سلة مشتريات مدى</h3>
+                        <p class="text-[11px] text-slate-400">دفع آمن وتسليم فوري</p>
+                    </div>
+                </div>
+                <button onclick="toggleCartDrawer(false)" class="w-9 h-9 rounded-xl glass-panel text-slate-300 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="cart-drawer-body" class="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4 pb-12"></div>
+        </div>
+    </div>
+
+    <!-- 10. ORDER RECEIPT MODAL -->
+    <div id="receipt-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm" onclick="closeModal('receipt-modal')">
+        <div class="glass-panel rounded-3xl max-w-md w-full max-h-[92dvh] overflow-y-auto overscroll-contain p-6 border-emerald-400/45 space-y-4 text-center" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 text-3xl shadow-[0_0_24px_rgba(16,185,129,0.3)]">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 class="font-black text-xl text-white">تم استلام طلبك بنجاح!</h3>
+                <p class="text-xs text-slate-300">انسخ رقم طلبك لمتابعة حالة التنفيذ في أي وقت</p>
+            </div>
+            <div id="receipt-modal-body" class="space-y-3 text-right"></div>
+        </div>
+    </div>
+
+    <!-- 11. COSMIC AUTH MODAL -->
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm" onclick="closeModal('auth-modal')">
+        <div class="glass-panel rounded-3xl max-w-md w-full max-h-[94dvh] overflow-y-auto overscroll-contain p-5 sm:p-6 relative border-sky-400/45" onclick="event.stopPropagation()">
+            <button onclick="closeModal('auth-modal')" class="absolute left-4 top-4 w-9 h-9 rounded-xl glass-panel text-slate-300 hover:text-white flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center space-y-2 mb-4">
+                <div class="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-electricCyan via-sapphire to-royalViolet p-[1.5px]">
+                    <div class="w-full h-full bg-obsidian rounded-[14.5px] flex items-center justify-center text-electricCyan text-xl">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                </div>
+                <h3 class="font-black text-xl text-white">بوابة حسابات مدى VIP</h3>
+                <p class="text-xs text-slate-300">سجّل دخولك أو أنشئ حسابك للحصول على امتيازات مدى الحصرية</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1.5 mb-4 text-[11px]">
+                <div class="p-2 rounded-xl bg-obsidian/80 border border-sky-400/20 flex items-center gap-1.5 text-sky-200">
+                    <i class="fa-solid fa-percent text-amber-300"></i>
+                    <span>خصم تلقائي 10% VIP</span>
+                </div>
+                <div class="p-2 rounded-xl bg-obsidian/80 border border-sky-400/20 flex items-center gap-1.5 text-sky-200">
+                    <i class="fa-solid fa-wallet text-electricCyan"></i>
+                    <span>محفظة مدى الفورية</span>
+                </div>
+                <div class="p-2 rounded-xl bg-obsidian/80 border border-sky-400/20 flex items-center gap-1.5 text-sky-200">
+                    <i class="fa-solid fa-bookmark text-violet-300"></i>
+                    <span>حفظ المعرّفات والـ IDs</span>
+                </div>
+                <div class="p-2 rounded-xl bg-obsidian/80 border border-sky-400/20 flex items-center gap-1.5 text-sky-200">
+                    <i class="fa-solid fa-vault text-emerald-300"></i>
+                    <span>الخزنة الرقمية للأكواد</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1.5 bg-obsidian/90 p-1 rounded-xl border border-blue-400/20 mb-4">
+                <button type="button" onclick="switchAuthTab('login')" id="auth-tab-login" class="py-2 rounded-lg text-xs sm:text-sm font-bold bg-sapphire text-white transition">تسجيل الدخول</button>
+                <button type="button" onclick="switchAuthTab('register')" id="auth-tab-register" class="py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-300 transition">إنشاء حساب جديد</button>
+            </div>
+
+            <div id="auth-error-box" class="hidden mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-400/60 text-xs text-rose-100 flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-rose-400 shrink-0"></i>
+                <span id="auth-error-msg" class="font-bold"></span>
+            </div>
+
+            <form id="auth-login-form" onsubmit="handleLoginSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">اسم المستخدم أو رقم الجوال:</label>
+                    <input type="text" id="login-username" oninput="clearAuthError()" required placeholder="أدخل اسم المستخدم أو رقم الجوال" class="w-full bg-obsidian/90 border border-blue-400/30 focus:border-electricCyan rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور:</label>
+                    <input type="password" id="login-password" oninput="clearAuthError()" required placeholder="••••••••" class="w-full bg-obsidian/90 border border-blue-400/30 focus:border-electricCyan rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none">
+                </div>
+                <button type="submit" class="btn-sapphire w-full py-3 rounded-xl font-bold text-sm text-white">دخول إلى الحساب</button>
+            </form>
+
+            <form id="auth-register-form" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">اسم المستخدم:</label>
+                    <input type="text" id="reg-username" oninput="clearAuthError()" required placeholder="مثال: mohamed_dz" class="w-full bg-obsidian/90 border border-blue-400/30 focus:border-electricCyan rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">رقم الجوال (واتساب):</label>
+                    <input type="tel" id="reg-phone" oninput="clearAuthError()" required dir="ltr" placeholder="+213550000000" class="w-full bg-obsidian/90 border border-blue-400/30 focus:border-electricCyan rounded-xl px-3.5 py-2.5 text-sm text-white text-right focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">كلمة المرور:</label>
+                    <input type="password" id="reg-password" oninput="clearAuthError()" required minlength="4" placeholder="••••••••" class="w-full bg-obsidian/90 border border-blue-400/30 focus:border-electricCyan rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none">
+                </div>
+                <button type="submit" class="btn-sapphire w-full py-3 rounded-xl font-bold text-sm text-white">إنشاء حساب وتفعيل VIP ★</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 12. VIP CUSTOMER HUB MODAL -->
+    <div id="customer-hub-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-2.5 sm:p-4 bg-black/85 backdrop-blur-sm" onclick="closeModal('customer-hub-modal')">
+        <div class="glass-panel rounded-3xl max-w-2xl w-full max-h-[92dvh] flex flex-col border-sky-400/45 overflow-hidden" onclick="event.stopPropagation()">
+            <div class="shrink-0 px-5 py-4 border-b border-blue-500/20 bg-obsidian/85 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div id="hub-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-br from-electricCyan via-sapphire to-royalViolet flex items-center justify-center text-obsidian font-black text-base shrink-0">م</div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                            <h3 id="hub-name" class="font-bold text-base text-white truncate">حسابي</h3>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400/20 text-amber-300 border border-amber-400/40 shrink-0">مدى VIP ★</span>
+                        </div>
+                        <p id="hub-phone" class="text-[11px] text-slate-400 font-mono truncate">+213</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="logoutSession(); closeModal('customer-hub-modal');" class="px-3 py-1.5 rounded-xl bg-rose-500/15 border border-rose-400/35 text-[11px] font-bold text-rose-300 hover:bg-rose-500/25">خروج</button>
+                    <button onclick="closeModal('customer-hub-modal')" class="w-9 h-9 rounded-xl glass-panel text-slate-300 hover:text-white flex items-center justify-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="shrink-0 px-4 pt-3 pb-2 bg-obsidian/60 border-b border-white/5 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                <button onclick="switchHubTab('pass')" id="hub-tab-pass" class="hub-tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-crown ml-1.5"></i>بطاقة VIP والمحفظة
+                </button>
+                <button onclick="switchHubTab('saved')" id="hub-tab-saved" class="hub-tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-bookmark ml-1.5"></i>المعرّفات المحفوظة
+                </button>
+                <button onclick="switchHubTab('vault')" id="hub-tab-vault" class="hub-tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-vault ml-1.5"></i>الخزنة الرقمية
+                </button>
+                <button onclick="switchHubTab('orders')" id="hub-tab-orders" class="hub-tab-btn shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-receipt ml-1.5"></i>طلباتي
+                </button>
+            </div>
+
+            <div id="customer-hub-body" class="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-5"></div>
+        </div>
+    </div>
+
+    <!-- Floating Clean Toast Notification -->
+    <div id="toast-box" class="fixed top-5 left-1/2 -translate-x-1/2 z-[70] hidden glass-panel border-electricCyan/60 rounded-2xl px-4 py-2.5 shadow-2xl flex items-center gap-2 text-xs sm:text-sm text-white max-w-[92vw]">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-electricCyan"></i>
+        <span id="toast-text">تم التحديث بنجاح</span>
+    </div>
+
+    <script src="./app.js"></script>
+</body>
+</html>
