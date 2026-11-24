@@ -1,1 +1,316 @@
+/* =========================================================
+   1. BASE RESET & ZERO HORIZONTAL OVERFLOW ON MOBILE
+========================================================= */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
 
+html, body {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    background-color: #030612;
+    color: #f8fafc;
+    font-family: 'Cairo', sans-serif;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Fixed Cosmic Nebula & Strictly Clipped Diagonal Neon Rays */
+.cosmic-env {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(ellipse 68% 48% at 14% 6%, rgba(37, 99, 235, 0.25), transparent 64%),
+        radial-gradient(ellipse 56% 44% at 88% 16%, rgba(124, 58, 237, 0.22), transparent 65%),
+        radial-gradient(ellipse 52% 40% at 50% 96%, rgba(56, 189, 248, 0.14), transparent 70%),
+        linear-gradient(170deg, #030612 0%, #070d1f 55%, #030612 100%);
+}
+
+.neon-ray-1 {
+    position: absolute;
+    top: -120px;
+    left: -15%;
+    width: 68%;
+    height: 210px;
+    background: linear-gradient(95deg, rgba(37, 99, 235, 0.34), rgba(56, 189, 248, 0.12), transparent);
+    transform: rotate(22deg);
+    filter: blur(44px);
+    opacity: 0.78;
+}
+
+.neon-ray-2 {
+    position: absolute;
+    bottom: 8%;
+    right: -18%;
+    width: 60%;
+    height: 195px;
+    background: linear-gradient(275deg, rgba(124, 58, 237, 0.28), rgba(56, 189, 248, 0.10), transparent);
+    transform: rotate(-19deg);
+    filter: blur(48px);
+    opacity: 0.68;
+}
+
+/* Ultra-Lightweight 75-Star Canvas */
+#starfield-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* =========================================================
+   2. COSMIC OBSIDIAN & ELECTRIC SAPPHIRE GLASSMORPHISM
+========================================================= */
+.glass-panel {
+    background: rgba(9, 15, 36, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(56, 189, 248, 0.20);
+    box-shadow: 0 14px 36px -12px rgba(2, 6, 23, 0.88), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+    position: relative;
+    background: linear-gradient(155deg, rgba(14, 24, 58, 0.76) 0%, rgba(7, 13, 31, 0.90) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.24s ease, box-shadow 0.24s ease;
+    overflow: hidden;
+}
+
+.glass-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(125deg, rgba(255, 255, 255, 0.10) 0%, transparent 38%, rgba(56, 189, 248, 0.08) 70%, rgba(124, 58, 237, 0.08) 100%);
+    opacity: 0;
+    transition: opacity 0.26s ease;
+    pointer-events: none;
+}
+
+.glass-card:hover {
+    border-color: rgba(56, 189, 248, 0.62);
+    box-shadow: 0 20px 42px -12px rgba(37, 99, 235, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    transform: translateY(-4px);
+}
+
+.glass-card:hover::after {
+    opacity: 1;
+}
+
+.btn-sapphire {
+    background: linear-gradient(135deg, #2563eb 0%, #38bdf8 52%, #7c3aed 100%);
+    box-shadow: 0 8px 24px -6px rgba(37, 99, 235, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition: transform 0.18s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn-sapphire:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 12px 30px -5px rgba(56, 189, 248, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-sapphire:active {
+    transform: scale(0.98);
+}
+
+.text-cosmic-gradient {
+    background: linear-gradient(95deg, #ffffff 4%, #38bdf8 48%, #818cf8 78%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* =========================================================
+   3. SIGNATURE FLOATING COSMIC GLASS PRISM (PURE CSS 3D + SVG)
+========================================================= */
+.prism-stage {
+    perspective: 950px;
+    width: 210px;
+    height: 210px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    touch-action: pan-y;
+}
+
+@media (min-width: 768px) {
+    .prism-stage {
+        width: 245px;
+        height: 245px;
+    }
+}
+
+.prism-rig {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.15s ease-out;
+}
+
+.prism-ambient-glow {
+    position: absolute;
+    inset: 16%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.48) 0%, rgba(37, 99, 235, 0.30) 44%, rgba(124, 58, 237, 0.28) 68%, transparent 78%);
+    transform: translateZ(-28px);
+    animation: ambientPulse 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes ambientPulse {
+    0% { opacity: 0.65; transform: translateZ(-28px) scale(0.93); }
+    100% { opacity: 1; transform: translateZ(-28px) scale(1.10); }
+}
+
+.orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    pointer-events: none;
+}
+
+.orbit-ring-1 {
+    inset: 6px;
+    border: 1.5px solid rgba(56, 189, 248, 0.60);
+    border-top-color: #ffffff;
+    border-bottom-color: rgba(37, 99, 235, 0.35);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.32);
+    animation: spinOrbit1 10s linear infinite;
+}
+
+.orbit-ring-2 {
+    inset: 22px;
+    border: 1.5px solid rgba(124, 58, 237, 0.65);
+    border-left-color: #38bdf8;
+    border-right-color: transparent;
+    box-shadow: 0 0 14px rgba(124, 58, 237, 0.35);
+    animation: spinOrbit2 14s linear infinite reverse;
+}
+
+.orbit-ring-3 {
+    inset: 38px;
+    border: 1px dashed rgba(56, 189, 248, 0.58);
+    animation: spinOrbit3 8.5s linear infinite;
+}
+
+@keyframes spinOrbit1 {
+    0% { transform: rotateX(68deg) rotateY(18deg) rotateZ(0deg); }
+    100% { transform: rotateX(68deg) rotateY(18deg) rotateZ(360deg); }
+}
+
+@keyframes spinOrbit2 {
+    0% { transform: rotateX(54deg) rotateY(-44deg) rotateZ(0deg); }
+    100% { transform: rotateX(54deg) rotateY(-44deg) rotateZ(360deg); }
+}
+
+@keyframes spinOrbit3 {
+    0% { transform: rotateX(-64deg) rotateY(30deg) rotateZ(0deg); }
+    100% { transform: rotateX(-64deg) rotateY(30deg) rotateZ(360deg); }
+}
+
+.orbit-spark {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    top: -4px;
+    left: 50%;
+    margin-left: -3.5px;
+    background: #38bdf8;
+    box-shadow: 0 0 10px #38bdf8, 0 0 18px #ffffff;
+}
+
+.orbit-spark-violet {
+    background: #c084fc;
+    box-shadow: 0 0 10px #c084fc, 0 0 18px #ffffff;
+}
+
+.prism-core {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(28px);
+    animation: floatPrism 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatPrism {
+    0% { transform: translateZ(24px) translateY(-6px); }
+    100% { transform: translateZ(34px) translateY(7px); }
+}
+
+/* =========================================================
+   4. METALLIC 3D MADA VIP PASS CARD
+========================================================= */
+.vip-pass-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(29, 78, 216, 0.90) 0%, rgba(7, 13, 31, 0.96) 48%, rgba(124, 58, 237, 0.85) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.50);
+    box-shadow: 0 22px 44px -14px rgba(0, 0, 0, 0.9), 0 0 30px rgba(37, 99, 235, 0.30);
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.16s ease-out;
+}
+
+.vip-pass-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 220%;
+    height: 200%;
+    background: linear-gradient(115deg, transparent 43%, rgba(255, 255, 255, 0.14) 49%, rgba(56, 189, 248, 0.24) 51%, transparent 56%);
+    animation: metallicShimmer 5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes metallicShimmer {
+    0% { transform: translateX(-30%); }
+    100% { transform: translateX(30%); }
+}
+
+/* Giant Subtle Footer Watermark */
+.mada-watermark {
+    font-size: clamp(4.5rem, 17vw, 13rem);
+    line-height: 0.85;
+    letter-spacing: 0.14em;
+    font-weight: 900;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.12) 0%, rgba(124, 58, 237, 0.03) 75%, transparent 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Shake Animation for Inline Auth Error */
+@keyframes shakeX {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+    animation: shakeX 0.35s ease;
+}
+
+/* Custom Scrollbars */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #030612; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #2563eb, #7c3aed); border-radius: 9999px; }
